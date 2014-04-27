@@ -1,0 +1,190 @@
+slc = 0
+backColor = colors.black
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+optaction = ""
+appcolor = colors.gray
+background = nil --paintutils.loadImage("/pockyOS/backgrounds/pocket")
+
+local function setbarc(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+barLines = setbarc("/pockyOS/properties")
+term.setCursorPos(2,10)
+topbarc = tonumber(barLines[2])
+term.setCursorPos(1,1)
+
+local function readLines(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+tLines = readLines("/pockyOS/properties")
+background = paintutils.loadImage("/pockyOS/backgrounds/"..tLines[1])
+print(background)
+
+
+term.setBackgroundColor(backColor)
+term.clear()
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("PockyOS - Home")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  drawapps()
+  
+end
+
+function drawDesktop()
+  term.setBackgroundColor(backColor)
+  term.clear()
+  paintutils.drawImage(background,2,1)
+  barsdraw()
+end
+
+function drawOptions()
+term.setTextColor(colors.gray)
+term.setBackgroundColor(colors.lightGray)
+term.setCursorPos(6,15)
+print("                ")
+term.setCursorPos(6,16)
+print("    Shutdown    ")
+term.setCursorPos(6,17)
+print("     Reboot     ")
+term.setCursorPos(6,18)
+print("                ")
+end
+
+function areyousure()
+term.setCursorPos(6,5)
+print("                ")
+term.setCursorPos(6,6)
+print("  Are you sure  ")
+term.setCursorPos(6,7)
+print("  [Yes]   [No]  ")
+term.setCursorPos(6,8)
+print("                ")
+end
+function drawapps()
+  term.setBackgroundColor(appcolor)
+  term.setCursorPos(2,3)
+  term.clearLine()
+  print("[Notes]")
+term.setCursorPos(2,5)
+  term.clearLine()
+  print("[More apps]")
+term.setCursorPos(2,7)
+  term.clearLine()
+  print("[Settings]")
+--[[
+term.setCursorPos(2,9)
+  print("[Settings]")
+term.setCursorPos(2,11)
+  print("[Settings]")
+--]]
+
+end
+
+while true do
+if slc == 0 then
+drawDesktop()
+end
+local event, button, X, Y = os.pullEvent("mouse_click")
+if slc == 0 then      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    if slc == 0 then
+      drawOptions()
+      slc = 1
+    elseif slc == 1 then
+      slc = 0
+    end
+    elseif X >=1 and X <=26 and Y ==3 and button == 1 then
+      shell.run("/pockyOS/notes")
+    
+    elseif X >=1 and X <=26 and Y==5 and button == 1 then
+      shell.run("/pockyOS/apps")
+    
+    elseif X >=1 and X <=26 and Y==7 and button == 1 then
+      shell.run("/pockyOS/settings")
+    
+    elseif X >=0 and X <=26 and Y==9 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==11 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==13 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==15 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==17 and button == 1 then
+drawDesktop() 
+    
+
+    else
+      drawDesktop()     
+    end
+
+elseif slc == 1 then
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    slc = 0
+  end 
+  if X >=9 and X <=17 and button == 1 and Y== 16 then slc = 2
+    optaction = "shutdown"
+    areyousure()
+    elseif X>=9 and X<=17 and Y==17 and button ==1 then slc = 2
+    optaction = "reboot"
+    areyousure()
+       
+  end
+
+elseif slc == 2 then
+  if X>=8 and X<=13 and Y==7 and button == 1 then
+       slc = 0
+       if optaction == "shutdown" then
+         os.shutdown()
+       end
+       if optaction == "reboot" then
+         os.reboot()
+       end
+     end
+     end
+     if X>=16 and X<=20 and Y==7 and button == 1 then
+       slc = 0
+    end 
+
+end
+

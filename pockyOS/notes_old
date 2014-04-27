@@ -1,0 +1,105 @@
+slc = 0
+local FileList = fs.list("/pockyOS/notelist/")
+input = nil
+backColor = 1
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+notename = string
+
+local function setbarc(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+barLines = setbarc("/pockyOS/properties")
+term.setCursorPos(2,10)
+topbarc = tonumber(barLines[2])
+term.setCursorPos(1,1)
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Notes - read/edit a note")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  begin()
+end
+
+
+function drawstuff()
+  term.setBackgroundColor(colors.yellow)
+  term.clear()
+  barsdraw()
+end
+
+function begin()
+  term.setCursorPos(2,3)
+  term.setBackgroundColor(colors.brown)
+  term.setTextColor(colors.black)
+  for _, file in ipairs(FileList) do
+  term.clearLine()
+  print("["..file.."]")
+  term.setCursorPos(2,3+2*_)
+  end
+end
+function begin2()
+  notename = read()
+  if fs.exists("/pockyOS/notelist/"..notename) == false then
+  shell.run("/pockyOS/notetype /pockyOS/notelist/"..notename)
+  term.setBackgroundColor(colors.yellow)
+  
+  else
+    term.setCursorPos(2,3)
+    print("File exists")
+    sleep(2)
+    shell.run("/pockyOS/notes_new")
+  end
+  drawstuff()
+  
+end
+
+drawstuff()
+
+
+function home()
+shell.run("/pockyOS/notes")
+error()
+end
+
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")
+  if slc == 0 then      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    home()
+   
+else
+      drawstuff()     
+    
+end
+  for _, file in ipairs(FileList) do
+  if X >= 1 and X<=26 and Y==1+2*_ then
+    shell.run("/pockyOS/notetype /pockyOS/notelist/"..file)
+    drawstuff()
+  end
+  end
+end
+end
+drawstuff()

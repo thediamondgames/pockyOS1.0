@@ -1,0 +1,105 @@
+slc = 0
+input = nil
+backColor = 1
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+
+local function setbarc(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+barLines = setbarc("/pockyOS/properties")
+term.setCursorPos(2,10)
+topbarc = tonumber(barLines[2])
+term.setCursorPos(1,1)
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Settings - Personalise")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  
+end
+
+function drawstuff()
+  term.setBackgroundColor(colors.black)
+  term.clear()
+  term.setBackgroundColor(colors.gray)
+  term.setCursorPos(2,3)
+  term.clearLine()
+  print("[Background]")
+  term.setCursorPos(2,5)
+  term.clearLine()
+  print("[Colors]")
+  --term.setCursorPos(2,7)
+  --term.clearLine()
+  --print("[About Phone]")
+  --term.setCursorPos(2,3)
+  --print("[Background]")
+  --term.setCursorPos(2,3)
+  --print("[Background]")
+  barsdraw()
+end
+
+drawstuff()
+
+function home()
+  shell.run("/pockyOS/settings")
+end
+
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")
+  if slc == 0 then      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    home()
+    
+    elseif X >=1 and X <=26 and Y ==3 and button == 1 then
+      shell.run("/pockyOS/settings_background")
+    
+    elseif X >=1 and X <=26 and Y==5 and button == 1 then
+      shell.run("/pockyOS/settings_colors")
+    
+    elseif X >=1 and X <=26 and Y==7 and button == 1 then
+drawDesktop()
+    
+    elseif X >=0 and X <=26 and Y==9 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==11 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==13 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==15 and button == 1 then
+drawDesktop() 
+    
+    elseif X >=0 and X <=26 and Y==17 and button == 1 then
+drawDesktop() 
+else
+      drawstuff()     
+    
+end
+end
+end
+

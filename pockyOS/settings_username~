@@ -1,0 +1,142 @@
+background = "/pockyOS/backgrounds/pocket"
+currentbac = ""
+changeto = ""
+slc = 0
+input = nil
+backColor = 1
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+
+local function readLines(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+tLines = readLines("/pockyOS/properties")
+background = paintutils.loadImage("/pockyOS/backgrounds/"..tLines[1])
+
+
+function names()
+  term.setCursorPos(2,5)
+  print("Green")
+  term.setCursorPos(2,7)
+  print("Red")
+  term.setCursorPos(2,9)
+  print("Blue")
+  term.setCursorPos(2,11)
+  print("Magneta")
+  term.setCursorPos(2,13)
+  print("Brown")
+
+end
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Settings - colors")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  begin()
+  names()
+end
+
+function drawstuff()
+  term.setBackgroundColor(colors.black)
+  term.clear()
+  term.setBackgroundColor(colors.gray)
+  term.setCursorPos(2,3)
+  term.clearLine()
+  write("Background: ")
+  term.setCursorPos(2,5)
+  term.clearLine()
+  write("Set bars color: ")
+  barsdraw()
+  
+end
+
+local function readLines(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+local function writeLines(sPath, tLines)
+  local file = fs.open(sPath, "w")
+  if file then
+        for _, sLine in ipairs(tLines) do
+          file.writeLine(sLine)
+        end
+        file.close()
+  end
+end
+
+function begin()
+  term.setBackgroundColor(colors.gray)
+  term.setCursorPos(2,5)
+
+end
+
+function changebac()
+local tLines = readLines("/pockyOS/properties")
+tLines[2] = changeto
+table.insert(tLines)
+writeLines("/pockyOS/properties", tLines)
+end
+
+function home()
+shell.run("/pockyOS/settings")
+end
+
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    home()
+    else
+      drawstuff()     
+    end
+  for i=1, 5 do
+  if X >= 1 and X<=26 and Y==3+2*i then
+    if i == 1 then
+      changeto = "colors.lime"
+    elseif i == 2 then
+      changeto = "colors.red"
+    elseif i == 3 then
+      changeto = "colors.blue"
+    elseif i == 4 then
+      changeto = "colors.magneta"
+    elseif i == 5 then
+      changeto = "colors.brown"
+    end
+    changebac()
+    drawstuff()
+  end
+  end
+end
+

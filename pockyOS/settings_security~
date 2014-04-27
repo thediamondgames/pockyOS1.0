@@ -1,0 +1,151 @@
+background = "/pockyOS/backgrounds/pocket"
+currentbac = ""
+changeto = ""
+FileList = fs.list("/pockyOS/backgrounds")
+slc = 0
+input = nil
+backColor = 1
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+changepass = nil
+
+local function setbarc(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+barLines = setbarc("/pockyOS/properties")
+term.setCursorPos(2,10)
+topbarc = tonumber(barLines[2])
+currentpass = barLines[3]
+term.setCursorPos(1,1)
+
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Settings - secrity")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  begin()
+end
+
+function drawstuff()
+  term.setBackgroundColor(colors.black)
+  term.clear()
+  term.setBackgroundColor(colors.gray)
+  term.setCursorPos(2,3)
+  term.clearLine()
+  
+  barsdraw()
+  
+end
+
+local function readLines(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+local function writeLines(sPath, tLines)
+  local file = fs.open(sPath, "w")
+  if file then
+        for _, sLine in ipairs(tLines) do
+          file.writeLine(sLine)
+        end
+        file.close()
+  end
+end
+
+function begin()
+  term.setBackgroundColor(colors.gray)
+  term.setCursorPos(2,3)
+  if currentpass == nil then
+  print("Enter new password: ")
+  changepass = read("*")
+  print("Repeat it: ")
+  changepass2 = read("*")
+  if changepass == changepass2 then
+    changebac()
+  else
+  print("Passwords didn't match")
+  sleep(2)
+  shell.run("/pockyOS/settings")
+  error()
+  end
+  else
+  print("Enter current password: ")
+  passcheck = read("*")
+  if currentpass == passcheck then
+  print("Enter new password: ")
+  changepass = read("*")
+  print("Repeat it: ")
+  changepass2 = read("*")
+  --if changepass == "" then
+    --print("password cannot be empty")
+  --else
+  if changepass == changepass2 then
+    
+    changepass = nil
+    changebac()
+  else
+  print("Passwords didn't match")
+  sleep(2)
+  end
+  --end
+  else
+  print("passwords didn't match")
+  sleep(2)
+  shell.run("/pockyOS/settings")
+  error()
+  end
+end
+end
+function changebac()
+local tLines = readLines("/pockyOS/properties")
+tLines[3] = changepass
+table.insert(tLines)
+writeLines("/pockyOS/properties", tLines)
+end
+
+function home()
+shell.run("/pockyOS/settings_pers")
+error()
+end
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    home()
+    else
+      drawstuff()     
+    end
+end
+drawstuff()
+barsdraw()

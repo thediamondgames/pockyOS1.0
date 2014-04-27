@@ -1,0 +1,8 @@
+--[[if tonumber(fs.list("/pockyOS/paintings")) > 7 then
+print("get out")
+else
+print("ok")
+end
+--]]
+list = tonumber(fs.list("/pockyOS/paintings"))
+print(list)

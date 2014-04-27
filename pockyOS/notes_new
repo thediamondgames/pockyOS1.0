@@ -1,0 +1,108 @@
+slc = 0
+input = nil
+backColor = 1
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+notename = string
+listammount = #fs.list("/pockyOS/notelist")
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Notes - crate a note")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  begin()
+end
+
+local function setbarc(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+barLines = setbarc("/pockyOS/properties")
+term.setCursorPos(2,10)
+topbarc = tonumber(barLines[2])
+term.setCursorPos(1,1)
+
+
+function drawstuff()
+  term.setBackgroundColor(colors.yellow)
+  term.clear()
+  barsdraw()
+end
+
+function begin()
+  term.setBackgroundColor(colors.yellow)
+  term.setTextColor(colors.black)
+  term.setCursorPos(2,3)
+  if listammount >= 7 then
+  term.clearLine()
+  print("Too many files! Only 7")
+  print(" allowed, delete some")
+  else
+  write("Note name: ")
+  end
+end
+function begin2()
+  if listammount >= 7 then
+  term.clearLine()
+  print("Too many files! Only 7 allowed")
+  else
+  notename = read()
+  if fs.exists("/pockyOS/notelist/"..notename) == false then
+  shell.run("/pockyOS/notetype /pockyOS/notelist/"..notename)
+  shell.run("/pockyOS/notes")
+  
+  else
+    term.setCursorPos(2,3)
+    term.clearLine()
+    print("File exists")
+    sleep(2)
+    shell.run("/pockyOS/notes_new")
+  end
+  end
+  drawstuff()
+  
+end
+
+drawstuff()
+
+
+function home()
+shell.run("/pockyOS/notes")
+error()
+end
+
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")
+  if slc == 0 then      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    home()
+  elseif X >=1 and X <=26 and Y>=2 and Y<=18 and button ==1 then
+    begin2()  
+else
+      drawstuff()     
+    
+end
+end
+end
+

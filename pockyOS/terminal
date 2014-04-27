@@ -1,0 +1,49 @@
+input = nil
+backColor = 1
+topbarc = colors.green
+topbartc = 1
+menubarc = colors.blue
+
+term.clear()
+term.setBackgroundColor(colors.black)
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Terminal")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  
+end
+
+function drawDesktop()
+  term.setBackgroundColor(colors.black)
+  term.clear()
+  barsdraw()
+  term.setCursorPos(1,2)
+  term.setBackgroundColor(colors.black)
+  write("User~PockyOS>")
+  input = read()
+  shell.run(input)
+  input = read()
+  drawDesktop()
+end
+
+drawDesktop()
+
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")      
+  if X >=12 and X <=15 and Y>=19 and Y<=20 and button ==1 then
+    home()
+    else
+      drawstuff()     
+    end
+
+end

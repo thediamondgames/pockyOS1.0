@@ -1,0 +1,113 @@
+slc = 0
+input = nil
+backColor = 1
+topbarc = colors.lime
+topbartc = 1
+menubarc = colors.blue
+checkpass = nil
+currentpass = nil
+x,y = term.getSize()
+
+local function setbarc(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+barLines = setbarc("/pockyOS/properties")
+term.setCursorPos(2,10)
+topbarc = tonumber(barLines[2])
+term.setCursorPos(1,1)
+
+local function passcheck(sPath)
+  local file = fs.open(sPath, "r")
+  if file then
+        local tLines = {}
+        local sLine = file.readLine()
+        while sLine do
+          table.insert(tLines, sLine)
+          sLine = file.readLine()
+        end
+        file.close()
+        return tLines
+  end
+  return nil
+end
+
+passLines = passcheck("/pockyOS/properties")
+term.setCursorPos(2,10)
+checkpass = tonumber(passLines[3])
+term.setCursorPos(1,1)
+
+function barsdraw()
+  term.setCursorPos(1,1)
+  term.setBackgroundColor(topbarc)
+  term.setTextColor(topbartc)
+  term.clearLine()
+  term.setCursorPos(1,20)
+  term.setBackgroundColor(topbarc)
+  term.setCursorPos(3,1)
+  print("Notes")
+  term.setCursorPos(1,19)
+  print("           |==|           ")
+  term.setCursorPos(1,20)
+  write("           |==|           ")
+  
+end
+
+
+function drawstuff()
+  term.setBackgroundColor(colors.white)
+  term.clear()
+  term.setBackgroundColor(colors.lightGray)
+  term.setCursorPos(1,10)
+  term.clearLine()
+  print("  Enter your passcode: ")
+  term.clearLine()
+  currentpass = read("*")
+  if currentpass == checkpass then
+  term.setCursorPos(1,10)
+  term.clearLine()
+  term.setCursorPos(1,11)
+  term.clearLine()
+  term.setCursorPos(1,10)
+  print("Password Correct!")
+  sleep(2)
+  shell.run("/pockyOS/home")
+  error()
+  else
+  term.setCursorPos(1,10)
+  term.clearLine()
+  term.setCursorPos(1,11)
+  term.clearLine()
+  term.setCursorPos(1,10)
+  print("Password Incorrect!")
+  sleep(2)
+  shell.run("/pockyOS/passcode")
+  error()
+  end
+  
+  barsdraw()
+end
+
+drawstuff()
+
+function home()
+shell.run("/pockyOS/home")
+error()
+end
+
+while true do
+local event, button, X, Y = os.pullEvent("mouse_click")
+      drawstuff()     
+end
+
